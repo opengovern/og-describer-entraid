@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/opengovern/og-describer-entraid/discovery/pkg/orchestrator"
 	model "github.com/opengovern/og-describer-entraid/discovery/pkg/models"
+	"github.com/opengovern/og-describer-entraid/discovery/pkg/orchestrator"
 	"github.com/opengovern/og-describer-entraid/discovery/provider"
 	"github.com/opengovern/og-describer-entraid/global"
 	"github.com/opengovern/og-util/pkg/describe"
@@ -20,10 +20,7 @@ import (
 )
 
 var (
-	resourceID       string
-	PatToken         = os.Getenv("PAT_TOKEN")
-	RepositoryName   = os.Getenv("REPOSITORY_NAME")
-	OrganizationName = os.Getenv("ORGANIZATION_NAME")
+	resourceID string
 )
 
 // getDescriberCmd represents the describer command
@@ -39,25 +36,21 @@ var getDescriberCmd = &cobra.Command{
 		defer file.Close() // Ensure the file is closed at the end
 
 		job := describe.DescribeJob{
-			JobID:           uint(uuid.New().ID()),
-			ResourceType:    resourceType,
-			IntegrationID:   "",
-			ProviderID:      "",
-			DescribedAt:     time.Now().UnixMilli(),
-			IntegrationType: global.IntegrationTypeLower,
-			CipherText:      "",
-			IntegrationLabels: map[string]string{
-				"OrganizationName": OrganizationName,
-			},
+			JobID:                  uint(uuid.New().ID()),
+			ResourceType:           resourceType,
+			IntegrationID:          "",
+			ProviderID:             "",
+			DescribedAt:            time.Now().UnixMilli(),
+			IntegrationType:        global.IntegrationTypeLower,
+			CipherText:             "",
+			IntegrationLabels:      map[string]string{},
 			IntegrationAnnotations: nil,
 		}
 
 		ctx := context.Background()
 		logger, _ := zap.NewProduction()
 
-		creds, err := provider.AccountCredentialsFromMap(map[string]any{
-			"pat_token": PatToken,
-		})
+		creds, err := provider.AccountCredentialsFromMap(map[string]any{})
 		if err != nil {
 			return fmt.Errorf(" account credentials: %w", err)
 		}
@@ -67,7 +60,6 @@ var getDescriberCmd = &cobra.Command{
 			return err
 		}
 		plg := global.Plugin()
-		additionalParameters["RepositoryName"] = RepositoryName
 
 		f := func(resource model.Resource) error {
 			if resource.Description == nil {
