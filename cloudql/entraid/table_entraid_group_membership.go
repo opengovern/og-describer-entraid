@@ -57,7 +57,7 @@ func tableEntraIdGroupMembership(_ context.Context) *plugin.Table {
 				Description: "user principal name.",
 				Transform:   transform.FromField("Description.UserPrincipalName")},
 			{
-				Name:        "user_type",
+				Name:        "member_type",
 				Type:        proto.ColumnType_STRING,
 				Description: "user type.",
 				Transform:   transform.FromField("Description.UserType")},
